@@ -13,9 +13,10 @@ private:
     double m_second;
 };
 
-static void DelNumbers(void *ptr)
+static void DelNumbers(PyObject *capsule)
 {
-    Numbers * oldnum = static_cast<Numbers *>(ptr);
+    void *ptr = PyCapsule_GetPointer(capsule, "_numbers.Ptr");
+    Numbers *oldnum = static_cast<Numbers *>(ptr);
     delete oldnum;
     return;
 }
@@ -34,8 +35,8 @@ PyObject *wrap_new_Numbers(PyObject *, PyObject* args)
     Numbers *newnum = new Numbers(arg1, arg2);
 
     //Third, build a Python object to return
-    PyObject * py_newnum = PyCObject_FromVoidPtr(static_cast<void *>(newnum),
-                                                 &DelNumbers);
+    PyObject *py_newnum = PyCapsule_New(static_cast<void *>(newnum),
+            "_numbers.Ptr", &DelNumbers);
     return py_newnum;
 }
 
@@ -50,13 +51,15 @@ PyObject *wrap_Numbers_MemberMult(PyObject *, PyObject* args)
     if(!ok) return NULL;
 
     //Convert the PyCObject to a void *
-    void * temp = PyCObject_AsVoidPtr(pynum);
+    void *temp = PyCapsule_GetPointer(pynum, "_numbers.Ptr");
 
     //cast void pointer to Numbers pointer
     Numbers * thisnum = static_cast<Numbers *>(temp);
 
     //Can combine the two lines into one:
-    Numbers *thisNum = static_cast<Numbers *>( PyCObject_AsVoidPtr(pynum) );
+    //Numbers *thisNum = static_cast<Numbers *>(
+    //        PyCapsule_GetPointer(pynum, "_numbers.Ptr") );
+
     //Second, make the function call
     double result = thisnum->NumMemberMult();
 
