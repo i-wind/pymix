@@ -10,7 +10,7 @@ COMPILE.cxx = $(COMPILE.cc)
 %.o: %.cxx
 	$(COMPILE.cxx) $(OUTPUT_OPTION) $<
 
-all: noddy.so shoddy.so call embed
+all: noddy.so shoddy.so call embed _numbers.so
 
 call: call.o
 	$(CC) -o $@ $< $(LDLIBS)
@@ -30,6 +30,9 @@ shoddy.so: shoddy.o
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 shoddy.o: shoddy.cc
+
+_numbers.so: numbers.o
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 clean:
 	rm -f *.o *.pyc *.so call embed
