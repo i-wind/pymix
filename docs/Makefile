@@ -14,4 +14,4 @@ noddy.so: noddy.o
 noddy.o: noddy.cxx
 
 clean:
-	rm -f *.o noddy.so
+	rm -f *.o *.pyc noddy.so

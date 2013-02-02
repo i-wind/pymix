@@ -27,17 +27,16 @@ static PyTypeObject noddy_NoddyType = {
     0,                         /*tp_setattro*/
     0,                         /*tp_as_buffer*/
     Py_TPFLAGS_DEFAULT,        /*tp_flags*/
-    "Noddy objects",           /* tp_doc */
+    "Noddy objects description",  /* tp_doc */
 };
 
 static PyMethodDef noddy_methods[] = {
     {NULL}  /* Sentinel */
 };
 
-#ifndef PyMODINIT_FUNC  /* declarations for DLL import/export */
+#ifndef PyMODINIT_FUNC	/* declarations for DLL import/export */
 #define PyMODINIT_FUNC void
 #endif
-
 PyMODINIT_FUNC
 initnoddy(void) 
 {
