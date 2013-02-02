@@ -1,7 +1,10 @@
 #include <Python.h>
 #include "structmember.h" /* declarations that we use to handle attributes */
 
-/* Expend the basic example to add some data and methods */
+/**
+ * Expend the basic example to add some data and methods
+ * Supporting cyclic garbage collection.
+ */
 typedef struct {
     PyObject_HEAD
     PyObject *first; /* first name */
@@ -9,11 +12,45 @@ typedef struct {
     int number;
 } Noddy;
 
+static int
+Noddy_traverse(Noddy *self, visitproc visit, void *arg)
+{
+    int vret;
+
+    if (self->first) {
+        vret = visit(self->first, arg);
+        if (vret != 0)
+            return vret;
+    }
+    if (self->last) {
+        vret = visit(self->last, arg);
+        if (vret != 0)
+            return vret;
+    }
+
+    return 0;
+}
+
+static int 
+Noddy_clear(Noddy *self)
+{
+    PyObject *tmp;
+
+    tmp = self->first;
+    self->first = NULL;
+    Py_XDECREF(tmp);
+
+    tmp = self->last;
+    self->last = NULL;
+    Py_XDECREF(tmp);
+
+    return 0;
+}
+
 static void
 Noddy_dealloc(Noddy* self)
 {
-    Py_XDECREF(self->first);
-    Py_XDECREF(self->last);
+    Noddy_clear(self);
     self->ob_type->tp_free((PyObject*)self);
 }
 
@@ -138,10 +175,10 @@ static PyTypeObject NoddyType = {
     0,                         /*tp_getattro*/
     0,                         /*tp_setattro*/
     0,                         /*tp_as_buffer*/
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE | Py_TPFLAGS_HAVE_GC, /*tp_flags*/
     "Noddy objects description",  /* tp_doc */
-    0,                         /* tp_traverse */
-    0,                         /* tp_clear */
+    (traverseproc)Noddy_traverse,   /* tp_traverse */
+    (inquiry)Noddy_clear,           /* tp_clear */
     0,                         /* tp_richcompare */
     0,                         /* tp_weaklistoffset */
     0,                         /* tp_iter */
