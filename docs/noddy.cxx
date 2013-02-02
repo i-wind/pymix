@@ -1,7 +1,10 @@
 #include <Python.h>
 #include "structmember.h" /* declarations that we use to handle attributes */
 
-/* Expend the basic example to add some data and methods */
+/**
+ * Expend the basic example to add some data and methods.
+ * Finer control over how the first and last attributes are set.
+ */
 typedef struct {
     PyObject_HEAD
     PyObject *first; /* first name */
@@ -49,32 +52,93 @@ Noddy_init(Noddy *self, PyObject *args, PyObject *kwds)
 
     static char *kwlist[] = {"first", "last", "number", NULL};
 
-    if (! PyArg_ParseTupleAndKeywords(args, kwds, "|OOi", kwlist, 
-                                      &first, &last, 
+    if (! PyArg_ParseTupleAndKeywords(args, kwds, "|SSi", kwlist,
+                                      &first, &last,
                                       &self->number))
-        return -1; 
+        return -1;
 
     if (first) {
         tmp = self->first;
         Py_INCREF(first);
         self->first = first;
-        Py_XDECREF(tmp);
+        Py_DECREF(tmp);
     }
 
     if (last) {
         tmp = self->last;
         Py_INCREF(last);
         self->last = last;
-        Py_XDECREF(tmp);
+        Py_DECREF(tmp);
     }
 
     return 0;
 }
 
 static PyMemberDef Noddy_members[] = {
-    {"first", T_OBJECT_EX, offsetof(Noddy, first), 0, "first name"},
-    {"last", T_OBJECT_EX, offsetof(Noddy, last), 0, "last name"},
     {"number", T_INT, offsetof(Noddy, number), 0, "noddy number"},
+    {NULL}  /* Sentinel */
+};
+
+/* custom getter and setter functions */
+static PyObject *
+Noddy_getfirst(Noddy *self, void *closure)
+{
+    Py_INCREF(self->first);
+    return self->first;
+}
+
+static int
+Noddy_setfirst(Noddy *self, PyObject *value, void *closure)
+{
+    if (value == NULL) {
+        PyErr_SetString(PyExc_TypeError, "Cannot delete the first attribute");
+        return -1;
+    }
+  
+    if (! PyString_Check(value)) {
+        PyErr_SetString(PyExc_TypeError, 
+                        "The first attribute value must be a string");
+        return -1;
+    }
+      
+    Py_DECREF(self->first);
+    Py_INCREF(value);
+    self->first = value;    
+
+    return 0;
+}
+
+static PyObject *
+Noddy_getlast(Noddy *self, void *closure)
+{
+    Py_INCREF(self->last);
+    return self->last;
+}
+
+static int
+Noddy_setlast(Noddy *self, PyObject *value, void *closure)
+{
+    if (value == NULL) {
+        PyErr_SetString(PyExc_TypeError, "Cannot delete the last attribute");
+        return -1;
+    }
+  
+    if (! PyString_Check(value)) {
+        PyErr_SetString(PyExc_TypeError, 
+                        "The last attribute value must be a string");
+        return -1;
+    }
+      
+    Py_DECREF(self->last);
+    Py_INCREF(value);
+    self->last = value;    
+
+    return 0;
+}
+
+static PyGetSetDef Noddy_getseters[] = {
+    {"first",  (getter)Noddy_getfirst, (setter)Noddy_setfirst, "first name", NULL},
+    {"last", (getter)Noddy_getlast, (setter)Noddy_setlast, "last name", NULL},
     {NULL}  /* Sentinel */
 };
 
@@ -88,16 +152,6 @@ Noddy_name(Noddy* self)
         format = PyString_FromString("%s %s");
         if (format == NULL)
             return NULL;
-    }
-
-    if (self->first == NULL) {
-        PyErr_SetString(PyExc_AttributeError, "first");
-        return NULL;
-    }
-
-    if (self->last == NULL) {
-        PyErr_SetString(PyExc_AttributeError, "last");
-        return NULL;
     }
 
     args = Py_BuildValue("OO", self->first, self->last);
@@ -148,7 +202,7 @@ static PyTypeObject NoddyType = {
     0,                         /* tp_iternext */
     Noddy_methods,             /* tp_methods */
     Noddy_members,             /* tp_members */
-    0,                         /* tp_getset */
+    Noddy_getseters,           /* tp_getset */
     0,                         /* tp_base */
     0,                         /* tp_dict */
     0,                         /* tp_descr_get */
