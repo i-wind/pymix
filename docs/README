@@ -1,0 +1,3 @@
+Using setup.py:
+$ python setup.py --help
+$ python setup.py buil
