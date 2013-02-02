@@ -8,14 +8,7 @@ print nd, nd.__doc__, dir(nd), repr(nd), nd.__class__
 
 nd.first = "Harry"
 nd.last = "Trueman"
+nd.number = 8
 
+print "%s %s %d" % (nd.first, nd.last, nd.number)
 print nd.name()
-
-# Noddy objects can participate in cycles. This is pretty silly,
-# but it gives us an excuse to add support for the cyclic-garbage
-# collector to the Noddy example.
-n = noddy.Noddy()
-l = [n]
-n.first = l
-
-print n.name()
