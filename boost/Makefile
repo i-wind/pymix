@@ -1,6 +1,6 @@
 INC   = -I/usr/include/python2.7
 LIB   = -lpython2.7 -lboost_python
-FLAGS = -shared -fPIC -DPIC -Wall -O2
+FLAGS = -shared -fPIC -DPIC -DPIC -DWITH_PYTHON -Wall -O2
 NAME  = _url_parser
 LIBNM = $(addsuffix .so,$(NAME))
 

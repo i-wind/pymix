@@ -51,6 +51,9 @@ void UrlParser::parse(const string &url)
         m_port = m_host.substr(port + 1);
         m_host = m_host.substr(0, port);
     }
+    else {
+        m_port = "80";
+    }
     path = path.substr(pathStart + 1);
 
     // get query start

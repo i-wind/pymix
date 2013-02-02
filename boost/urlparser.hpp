@@ -4,9 +4,12 @@
 #define URLPARSER_H
 
 #include <string>
+#ifdef WITH_PYTHON
 #include <boost/python.hpp>
 using namespace boost::python;
-//#include "http.hpp"
+#else
+#include "http.hpp"
+#endif
 
 using namespace std;
 
@@ -68,6 +71,7 @@ private:
     string m_port;         // port of the url string
 };
 
+#ifdef WITH_PYTHON
 BOOST_PYTHON_MODULE(_url_parser)
 {
     class_<UrlParser>("UrlParser", init<const string& >())
@@ -81,5 +85,6 @@ BOOST_PYTHON_MODULE(_url_parser)
         .add_property("port", &UrlParser::getPort)
     ;
 }
+#endif  // WITH_PYTHON
 
-#endif // URLPARSER_H
+#endif  // URLPARSER_H
