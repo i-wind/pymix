@@ -15,19 +15,8 @@ typedef struct {
 static int
 Noddy_traverse(Noddy *self, visitproc visit, void *arg)
 {
-    int vret;
-
-    if (self->first) {
-        vret = visit(self->first, arg);
-        if (vret != 0)
-            return vret;
-    }
-    if (self->last) {
-        vret = visit(self->last, arg);
-        if (vret != 0)
-            return vret;
-    }
-
+    Py_VISIT(self->first);
+    Py_VISIT(self->last);
     return 0;
 }
 
