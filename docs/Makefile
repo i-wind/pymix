@@ -1,4 +1,4 @@
-C = gcc
+CC = gcc
 CXX = g++
 CXXFLAGS = -I/usr/include/python2.7 -fPIC -Wall -ggdb
 CFLAGS = -I/usr/include/python2.7 -Wall -ggdb
@@ -7,10 +7,16 @@ LDLIBS   = -lpython2.7
 
 COMPILE.cxx = $(COMPILE.cc)
 
-all: noddy.so shoddy.so embed
-
 %.o: %.cxx
 	$(COMPILE.cxx) $(OUTPUT_OPTION) $<
+
+all: noddy.so shoddy.so call embed
+
+call: call.o
+	$(CC) -o $@ $< $(LDLIBS)
+
+embed: embed.o
+	$(CC) -o $@ $< $(LDLIBS)
 
 noddy.so: noddy.o
 	$(CXX) $(LDFLAGS) -o $@ $^ $(LDLIBS)
@@ -25,8 +31,5 @@ shoddy.so: shoddy.o
 
 shoddy.o: shoddy.cc
 
-embed: embed.o
-	$(CC) -o $@ $< $(LDLIBS)
-
 clean:
-	rm -f *.o *.pyc *.so embed
+	rm -f *.o *.pyc *.so call embed
