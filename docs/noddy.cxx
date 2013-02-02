@@ -23,16 +23,8 @@ Noddy_traverse(Noddy *self, visitproc visit, void *arg)
 static int 
 Noddy_clear(Noddy *self)
 {
-    PyObject *tmp;
-
-    tmp = self->first;
-    self->first = NULL;
-    Py_XDECREF(tmp);
-
-    tmp = self->last;
-    self->last = NULL;
-    Py_XDECREF(tmp);
-
+    Py_CLEAR(self->first);
+    Py_CLEAR(self->last);
     return 0;
 }
 
