@@ -1,0 +1,4 @@
+*.o
+*.py[cd]
+*.x
+input.dat
