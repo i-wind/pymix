@@ -8,8 +8,9 @@ CPPFLAGS = -Wall -O2
 NAME  = _url_parser
 LIBNM = $(addsuffix .so,$(NAME))
 HWOBJS = hello_world.o
+OBJS = handle_error.o
 
-all: $(LIBNM) hello_ext.so example.x hello.so helloworld.x
+all: $(LIBNM) hello_ext.so example.x hello.so helloworld.x handle_error.x
 
 $(LIBNM): $(addsuffix .o,$(NAME))
 	g++ $(FLAGS) $^ -o $@ $(INC) $(LIB)
@@ -27,6 +28,9 @@ hello.so: hello.cpp
 	g++ $(FLAGS) $^ -o $@ $(INC) $(LIB)
 
 helloworld.x: $(HWOBJS)
+	$(LD) -o $@ $^ $(PY_LDFLAGS) $(LDFLAGS) $(BOOST_LDFLAGS)
+
+handle_error.x: $(OBJS)
 	$(LD) -o $@ $^ $(PY_LDFLAGS) $(LDFLAGS) $(BOOST_LDFLAGS)
 
 .PHONY: depends strip clean
