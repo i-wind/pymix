@@ -19,3 +19,8 @@ $ ./call_class.x py_class Multiply multiply2 8 4
 $ ./call_thread.x py_thread ThreadFunc
 $ ./call_thread.x py_thread createThread
 $ ./call_thread_2.x py_thread MyThread run
+$ ./call_mmap.x py_mmap MMAPShmem run
+
+Source:
+http://www.codeproject.com/Articles/11805/Embedding-Python-in-C-C-Part-I
+http://www.codeproject.com/Articles/11843/Embedding-Python-in-C-C-Part-II
