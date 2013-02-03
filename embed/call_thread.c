@@ -16,7 +16,7 @@ HANDLE handle;
 pthread_t mythread;
 #endif
 
-void ThreadProc(void*);
+void* ThreadProc(void*);
 
 #define NUM_ARGUMENTS 5
 typedef struct
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void ThreadProc( void *data )
+void* ThreadProc( void *data )
 {
     PyObject *pName, *pModule, *pDict, *pFunc;
     PyThreadState *mainThreadState, *myThreadState, *tempState;

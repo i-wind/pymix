@@ -19,7 +19,7 @@ HANDLE hFile, handle, map;
 pthread_t mythread;
 #endif
 
-void myThread(void*);
+void* myThread(void*);
 
 #define NUM_ARGUMENTS 5
 typedef struct
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void myThread( void *data )
+void* myThread( void *data )
 {
     PyObject *pName, *pModule, *pDict, *pClass, *pInstance;
     PyThreadState *mainThreadState, *myThreadState, *tempState;
