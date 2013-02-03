@@ -1,22 +1,9 @@
-#include <iostream>
 #include <boost/python.hpp>
 #include <Python.h>
 
 namespace py = boost::python;
 
 std::string parse_python_exception();
-
-int main(){
-    try {
-        Py_Initialize();
-        py::object rand_mod = py::import("fake_module");
-    }
-    catch(boost::python::error_already_set const &) {
-        // Parse and output the exception
-        std::string perror_str = parse_python_exception();
-        std::cout << "Error in Python: " << perror_str << std::endl;
-    }
-}
 
 // Parses the value of the active python exception
 // NOTE SHOULD NOT BE CALLED IF NO EXCEPTION
