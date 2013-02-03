@@ -16,3 +16,5 @@ $ ./call_function py_function multiply
 $ ./call_function py_function multiply1 3 5
 $ ./call_class py_class Multiply multiply
 $ ./call_class py_class Multiply multiply2 8 4
+$ ./call_thread py_thread ThreadFunc
+$ ./call_thread py_thread createThread
