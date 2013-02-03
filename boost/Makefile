@@ -5,7 +5,7 @@ CPPFLAGS = -Wall -O2
 NAME  = _url_parser
 LIBNM = $(addsuffix .so,$(NAME))
 
-all: $(LIBNM) hello_ext.so example.x
+all: $(LIBNM) hello_ext.so example.x hello.so
 
 $(LIBNM): $(addsuffix .o,$(NAME))
 	g++ $(FLAGS) $^ -o $@ $(INC) $(LIB)
@@ -18,6 +18,9 @@ hello_ext.so: hello_ext.cpp
 
 example.x: example.cpp
 	g++ $(CPPFLAGS) $^ -o $@ $(INC) $(LIB)
+
+hello.so: hello.cpp
+	g++ $(FLAGS) $^ -o $@ $(INC) $(LIB)
 
 .PHONY: depends strip clean
 depends:
