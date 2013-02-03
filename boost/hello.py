@@ -1,7 +1,10 @@
 import hello
 
-x = hello.Var('pi')
-x.value = 3.14
-print x.name, 'is around', x.value
+x = hello.Num(1.0)
+print x.value, x.rovalue
 
-x.name = 'e'
+x.value = 3.14
+print x.value, x.rovalue
+# (3.14, 3.14)
+
+x.rovalue = 2.17

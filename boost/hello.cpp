@@ -1,16 +1,27 @@
 #include <boost/python.hpp>
 using namespace boost::python;
 
-struct Var
+struct Num
 {
-    Var(std::string name) : name(name), value() {}
-    std::string const name;
-    float value;
+    Num(const float& val): m_value(val) {};
+    float get() const;
+    void set(float value);
+    float m_value;
 };
+
+float Num::get() const
+{
+    return m_value;
+}
+
+void Num::set(float value)
+{
+    m_value = value;
+}
 
 BOOST_PYTHON_MODULE(hello)
 {
-    class_<Var>("Var", init<std::string>())
-        .def_readonly("name", &Var::name)
-        .def_readwrite("value", &Var::value);
+class_<Num>("Num", init<float>())
+    .add_property("rovalue", &Num::get)
+    .add_property("value", &Num::get, &Num::set);
 }
