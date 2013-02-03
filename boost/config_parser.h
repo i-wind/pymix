@@ -8,6 +8,14 @@ class ConfigParser
     private:
         boost::python::object conf_parser_;
 
+        void init_py();
+        bool parse_file_py(const std::string &filename);
+        std::string get_py(const std::string &attr,
+                           const std::string &section = "DEFAULT");
+        void set_py(const std::string &attr, 
+                    const std::string &value,
+                    const std::string &section = "DEFAULT");
+
     public:
         ConfigParser();
 

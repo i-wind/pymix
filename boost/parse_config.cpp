@@ -27,12 +27,12 @@ int main()
         // Set a value and re-read
         parser.set("Directory", "values can be arbitrary strings", "DEFAULT");
         cout << "Directory (force set by application): " << parser.get("Directory") << endl;
+
         // Will raise a NoOption exception 
-        // cout << "Proxy host: " << parser.get("ProxyHost", "Network") << endl;
+         cout << "Proxy host: " << parser.get("ProxyHost", "Network") << endl;
     }
-    catch(boost::python::error_already_set const &) {
-        // Parse and output the exception
-        string perror_str = parse_python_exception();
-        cout << "Error during configuration parsing: " << perror_str << endl;
+    catch(exception &e) {
+        // The python error string will be in the thrown exception
+        cout << "Here is the error, from a C++ exception: " << e.what() << endl;
     }
 }

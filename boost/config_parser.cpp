@@ -1,8 +1,16 @@
 #include "config_parser.h"
+#include "handle_error.h"
 
+using namespace std;
 namespace py = boost::python;
 
 ConfigParser::ConfigParser()
+{
+    call_python_func<void>(boost::bind(&ConfigParser::init_py, this), 
+                           "Error during configuration parser init: ");
+}
+
+void ConfigParser::init_py()
 {
     // load the main namespace
     py::object mm = py::import("__main__");
@@ -14,20 +22,38 @@ ConfigParser::ConfigParser()
     conf_parser_ = py::eval("ConfigParser.RawConfigParser()", mn);
 }
 
-bool ConfigParser::parse_file(const std::string &filename)
+bool ConfigParser::parse_file_py(const string &filename)
 {
     // return true if we have successfully parsed the file
     return py::len(conf_parser_.attr("read")(filename)) == 1;
 }
 
-std::string ConfigParser::get(const std::string &attr, const std::string &section)
+bool ConfigParser::parse_file(const string &filename)
 {
-    // extract the string value of the attribute within the given section
-    return py::extract<std::string>(conf_parser_.attr("get")(section, attr));
+    return call_python_func<bool>(boost::bind(&ConfigParser::parse_file_py, this, filename), 
+                                  "Error during configuration file parsing: ");
 }
 
-void ConfigParser::set(const std::string &attr, const std::string &value, const std::string &section)
+string ConfigParser::get_py(const string &attr, const string &section)
+{
+    // extract the string value of the attribute within the given section
+    return py::extract<string>(conf_parser_.attr("get")(section, attr));
+}
+
+string ConfigParser::get(const string &attr, const string &section)
+{
+    return call_python_func<string>(boost::bind(&ConfigParser::get_py, this, attr, section),
+                                  "Error getting configuration option: ");
+}
+
+void ConfigParser::set_py(const string &attr, const string &value, const string &section)
 {
     // set the string value of the attribute within the given section
     conf_parser_.attr("set")(section, attr, value);
+}
+
+void ConfigParser::set(const string &attr, const string &value, const string &section)
+{
+    call_python_func<void>(boost::bind(&ConfigParser::set_py, this, attr, value, section),
+                           "Error setting configuration option: ");
 }
