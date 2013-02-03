@@ -1,18 +1,16 @@
 #include <boost/python.hpp>
 using namespace boost::python;
 
-struct World
+struct Var
 {
-    World(std::string msg): msg(msg) {}  // constructor
-    void set(std::string msg) { this->msg = msg; }
-    std::string greet() { return msg; }
-    std::string msg;
+    Var(std::string name) : name(name), value() {}
+    std::string const name;
+    float value;
 };
 
 BOOST_PYTHON_MODULE(hello)
 {
-    class_<World>("World", init<std::string>())
-        .def("greet", &World::greet)
-        .def("set", &World::set)
-    ;
+    class_<Var>("Var", init<std::string>())
+        .def_readonly("name", &Var::name)
+        .def_readwrite("value", &Var::value);
 }

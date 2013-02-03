@@ -1,7 +1,7 @@
-from hello import World
+import hello
 
-world = World("Hello guys!")
-print world.greet()
+x = hello.Var('pi')
+x.value = 3.14
+print x.name, 'is around', x.value
 
-world.set("Some greeting!")
-print world.greet()
+x.name = 'e'
