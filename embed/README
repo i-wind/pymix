@@ -1,3 +1,15 @@
 Using cmake:
 $ cmake .
 $ make
+
+pythonX.Y-config --cflags will give you the recommended flags when compiling:
+
+$ /usr/bin/python2.7-config --cflags
+
+pythonX.Y-config --ldflags will give you the recommended flags when linking:
+
+$ python2.7-config --ldflags
+-lpthread -ldl -lutil -lm -lpython2.7 -Xlinker -export-dynamic
+
+Using call_function:
+$ ./call_function py_function multiply

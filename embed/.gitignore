@@ -1,0 +1,3 @@
+*.o
+*.py[cd]
+call_function
