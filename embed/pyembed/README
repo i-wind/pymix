@@ -1,0 +1,218 @@
+url http://www.codeproject.com/Articles/14192/Embedding-Python-In-Your-C-Application
+
+One Man's GUI
+=============
+	
+You have a problem.
+You wrote a cross-platform mail server in C++.
+It runs on Windows, Linux and Mac.
+
+Well, is that a problem? 
+No, its' cool.
+
+But now you feel pathetic about yourself.
+Your manager says, "all is fine, but I want the users to edit the config file using a GUI."
+
+Yes, just a single dialog box, with a few input fields.
+But how to add it to your command line application?
+
+"Qt?"         
+       
+"No, we can't spend big cash for just a single window."
+
+"Gtk? or wxWidgets?" 
+
+"No, we can't add that much blot to our executable."
+"And mind it, I need it fast, 1 day, at-most".
+
+Now you feel stuck.
+Its' itching your sole and steaming your brow.
+
+I tell you, stay cool - read on.
+
+Embed Python
+------------
+
+Yes, that is the answer to your woes, embed Python.
+Python comes bundled with Tkinter - 
+the lightweight, mature, cross-platform UI toolkit.
+
+You can handcraft your UI in a matter of few minutes.
+And it won't add much to the size of your application.
+
+I will show you how easy it is.
+
+"But one word before that, why Python?"
+Well, these are some of the reasons that I personally like it:
+      1. It is straightforward. You can write useful stuff just
+	 after playing around with the language for a few minutes.
+      2. The syntax forces the lazy programmer to write clean, 
+	 well indented code. Still it does not force a particular
+	 programming style on you.
+      3. Though interpreted, performance is commendable.
+      4. You can extend and embed it.
+
+Many smart people are using it in demanding systems. 
+Some of the most celebrated Python users include:
+      1. Google
+      2. NASA
+      3. Industrial Light and Magic (Yes, StarWars owes much to Python !)
+
+"Ok, Ok. I agree that, on it's own, Python is a good language."
+"But I have had enough, trying to embed it."
+"The C API is very low-level, and it never worked as documented."
+      
+Yes, I agree that the documentation on embedding Python is missing something.
+But remember what I said, 'I will show you an easy way.'
+
+I have written a C++ wrapper over the Python API.
+Just use it. 
+
+You no longer need to worry about mapping Python objects to C/C++ types.
+You don't need to reference count objects on heap, for garbage collection.
+
+All is taken care of.
+Just use it.
+
+The "pyembed" classes
+---------------------
+
+The classes that we are going to use are declared in 'pyembed.h'.
+
+Consider, the following Python script:
+
+Listing 1 - test.py :-
+
+ def multiply(a,b):
+     "Finds a product, the other way round!"
+     c = 0
+     for i in range(0, a):
+	  c = c + b
+     return c
+
+The function "multiply" takes two integers as arguments and return an integer.
+Let us write some code to call this function from C++:
+
+Listing 2 - test_pyembed.cpp :-
+
+#include <iostream>
+#include "pyembed.h"
+using namespace pyembed; // for brevity
+
+int
+main(int argc, char** argv)
+{
+  try // always check for Python_exceptions
+    {
+
+      // Create an instance of the interpreter.
+      Python py(argc, argv);
+
+      // Load the test module into the interpreter
+      py.load("test");           
+
+      // value returned by python is stored here	
+      long ret = 0; 
+
+      // our argument list that maps string values 
+      // to their python types	
+      Arg_map args; 
+
+      // fill up argument strings and their types.
+      args["10"] = Py_long;
+      args["20"] = Py_long;
+
+      // make the call
+      py.call("multiply", args, ret);
+
+      // will print 200
+      std::cout << ret << '\n'; 
+
+      return 0;
+    }
+  catch (Python_exception ex)
+    {
+      std::cout << ex.what();
+    }
+  return 0;
+}
+
+I am not going to explain the code, as it is well commented.
+Our main actor here is the class "Python".
+It has a large variety of "call" functions, that can be used to call
+Python functions that return different kind of objects.
+The following Python types are handled as return values and mapped
+to C++ types:
+
+Python return				Mapped to
+-------------				---------
+
+PyString				std::string
+PyLong/PyInt				long
+PyFloat					double
+PyTuple					std::vector<std::string> (typedefed as String_list)
+PyList					std::vector<std::string> (typedefed as String_list)
+PyDict					std::map<std::string, std::string> (typedefed as String_map)
+
+Tuples, lists and dictionaries embedded inside other objects are returned as comma
+or colon delimited strings, which you further need to parse.
+But such values are seldom required.
+
+You can pass the following C++ types as arguments to Python functions:
+
+long                      (Py_long)
+double                    (Py_real)
+std::string or char*      (Py_string)
+
+You can also execute arbitrary Python scripts using the "run_string" function.
+To execute a script file as it is, use the "run_file" function.
+
+eg:
+	py.run_string("print 'Hello World from Python!');
+	py.run_file("test.py");
+
+Just go through pyembed.h to get a feel of all the facilities offered by our "Python" class.
+
+Download all source code and resources here as a single zip file.
+
+The zip file contains the code of the pyembed library, 
+along with a small C++ commandline program that demonstrates a GUI using Tkinter.
+
+Compiling
+---------
+
+Here is the command I used on Linux to compile the sample application "users.cpp":
+
+g++ -o users -I/usr/local/include/python2.4 pyembed.cpp users.cpp -L/usr/local/lib/python2.4/config -Xlinker -export-dynamic -lpython2.4 -lm -lpthread -ltk -lutil
+
+You need to change the -I and -L options to point to your Python installation folders.
+
+For compiling on windows (or any other platform), download and install Python
+and link the application with the platform specific Python library.
+If you are using Visual C++, you may also need to link with the Multi-threaded runtime library. 
+I don't work on Windows, so this is just an imagination.
+Always remember to add pyembed.cpp and pyembed.h to your project.
+
+Play around with the sample code. 
+Make changes to "adduserform.py" while the application is still running, 
+and see if the changes are reflected immediately.
+Yes, you can modify the UI, without recompiling the program.
+You can modify it on-the-fly. 
+This is just one of the advantages of giving your application a Python face.
+
+Please send me your comments using the email address: 
+
+       vijaymathew.pandyalakal@mindteck.com
+
+If you make any additions/modifications/bug-fixes to the pyembed library,
+please publish it on the intranet.
+
+Thank you for staying this long. Bye.
+
+------------------------------------------------------------------------------------------------------------
+
+-- 
+
+The first and most important thing is stability.
+		- Leonardo da Vinci (from his notes on architecture)
+	
