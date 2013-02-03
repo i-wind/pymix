@@ -50,9 +50,9 @@ Noddy_init(Noddy *self, PyObject *args, PyObject *kwds)
 {
     PyObject *first=NULL, *last=NULL, *tmp;
 
-    static char *kwlist[] = {"first", "last", "number", NULL};
+    static const char *kwlist[] = {"first", "last", "number", NULL};
 
-    if (! PyArg_ParseTupleAndKeywords(args, kwds, "|SSi", kwlist,
+    if (! PyArg_ParseTupleAndKeywords(args, kwds, "|SSi", (char **)kwlist,
                                       &first, &last,
                                       &self->number))
         return -1;
@@ -75,7 +75,7 @@ Noddy_init(Noddy *self, PyObject *args, PyObject *kwds)
 }
 
 static PyMemberDef Noddy_members[] = {
-    {"number", T_INT, offsetof(Noddy, number), 0, "noddy number"},
+    {(char *)"number", T_INT, offsetof(Noddy, number), 0, (char *)"noddy number"},
     {NULL}  /* Sentinel */
 };
 
@@ -137,8 +137,8 @@ Noddy_setlast(Noddy *self, PyObject *value, void *closure)
 }
 
 static PyGetSetDef Noddy_getseters[] = {
-    {"first",  (getter)Noddy_getfirst, (setter)Noddy_setfirst, "first name", NULL},
-    {"last", (getter)Noddy_getlast, (setter)Noddy_setlast, "last name", NULL},
+    {(char *)"first",  (getter)Noddy_getfirst, (setter)Noddy_setfirst, (char *)"first name", NULL},
+    {(char *)"last", (getter)Noddy_getlast, (setter)Noddy_setlast, (char *)"last name", NULL},
     {NULL}  /* Sentinel */
 };
 
