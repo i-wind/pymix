@@ -1,3 +1,4 @@
 *.o
 *.py[cd]
 call_function
+call_class
