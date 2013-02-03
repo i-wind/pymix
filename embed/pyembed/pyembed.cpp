@@ -305,7 +305,7 @@ PyObject* pyembed::Python::create_args(const Arg_map& args)
     return tuple;
 }
 
-static bool cleared = false;
+//static bool cleared = false;
 
 PyObject* pyembed::Python::make_call(const std::string& func_name,
                                      const pyembed::Arg_map& args)
