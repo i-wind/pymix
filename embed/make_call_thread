@@ -1,6 +1,0 @@
-#!/bin/sh
-
-ldflags=$(python2.7-config --ldflags)
-gcc call_thread.c -o call_thread $ldflags
-
-exit 0

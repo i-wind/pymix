@@ -12,10 +12,10 @@ $ python2.7-config --ldflags
 -lpthread -ldl -lutil -lm -lpython2.7 -Xlinker -export-dynamic
 
 Using call_function:
-$ ./call_function py_function multiply
-$ ./call_function py_function multiply1 3 5
-$ ./call_class py_class Multiply multiply
-$ ./call_class py_class Multiply multiply2 8 4
-$ ./call_thread py_thread ThreadFunc
-$ ./call_thread py_thread createThread
-$ ./call_thread_2 py_thread MyThread run
+$ ./call_function.x py_function multiply
+$ ./call_function.x py_function multiply1 3 5
+$ ./call_class.x py_class Multiply multiply
+$ ./call_class.x py_class Multiply multiply2 8 4
+$ ./call_thread.x py_thread ThreadFunc
+$ ./call_thread.x py_thread createThread
+$ ./call_thread_2.x py_thread MyThread run
