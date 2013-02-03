@@ -13,3 +13,4 @@ $ python2.7-config --ldflags
 
 Using call_function:
 $ ./call_function py_function multiply
+$ ./call_function py_function multiply1 3 5
